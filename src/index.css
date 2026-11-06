@@ -1,0 +1,964 @@
+
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color-scheme: dark;
+  --milad-bg: #080909;
+  --milad-panel: rgba(16, 18, 17, 0.84);
+  --milad-text: #f3f4ef;
+  --milad-muted: #858981;
+  --milad-border: rgba(255, 255, 255, 0.09);
+  --milad-accent: #c7ff55;
+  --milad-accent-rgb: 199, 255, 85;
+  --milad-angle: 0deg;
+}
+
+:root[data-milad-theme="light"] {
+  color-scheme: light;
+  --milad-bg: #f0f1eb;
+  --milad-panel: rgba(255, 255, 251, 0.88);
+  --milad-text: #171914;
+  --milad-muted: #6e7268;
+  --milad-border: rgba(20, 25, 15, 0.12);
+  --milad-accent: #6d9d16;
+  --milad-accent-rgb: 109, 157, 22;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--milad-bg);
+  transition: background-color 500ms ease, color 500ms ease;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--milad-bg);
+  color: var(--milad-text);
+  transition: background-color 500ms ease, color 500ms ease;
+}
+
+button,
+input,
+a {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--milad-accent);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: var(--milad-accent);
+  color: #10120b;
+}
+
+.milad-page {
+  min-height: 100vh;
+  position: relative;
+  overflow: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse at 50% -15%,
+      rgba(var(--milad-accent-rgb), 0.075),
+      transparent 48%
+    ),
+    var(--milad-bg);
+  transition: background-color 500ms ease;
+}
+
+.milad-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.13'/%3E%3C/svg%3E");
+}
+
+.milad-header {
+  --mx: 50%;
+  --my: 50%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 24px 22px;
+  transition: padding 350ms ease;
+}
+
+.milad-header.is-scrolled {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.milad-shell {
+  position: relative;
+  max-width: 1320px;
+  margin: 0 auto;
+  isolation: isolate;
+}
+
+.milad-shell::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -2;
+  border-radius: 25px;
+  background: conic-gradient(
+    from var(--milad-angle),
+    transparent 0deg,
+    transparent 45deg,
+    rgba(var(--milad-accent-rgb), 0.2) 75deg,
+    var(--milad-accent) 100deg,
+    rgba(255, 255, 255, 0.75) 112deg,
+    rgba(var(--milad-accent-rgb), 0.08) 135deg,
+    transparent 165deg,
+    transparent 360deg
+  );
+  animation: milad-orbit 8s linear infinite;
+  opacity: 0.82;
+  transition: opacity 350ms ease;
+}
+
+.milad-shell::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  z-index: -3;
+  border-radius: 32px;
+  background: radial-gradient(
+    ellipse at var(--mx) var(--my),
+    rgba(var(--milad-accent-rgb), 0.17),
+    transparent 48%
+  );
+  filter: blur(15px);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 350ms ease;
+}
+
+.milad-header.is-scrolled .milad-shell::before {
+  opacity: 0.55;
+}
+
+.milad-header.is-scrolled .milad-shell::after {
+  opacity: 0.32;
+}
+
+.milad-nav {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 24px;
+  border: 1px solid var(--milad-border);
+  border-radius: 24px;
+  background: var(--milad-panel);
+  color: var(--milad-text);
+  backdrop-filter: blur(26px) saturate(140%);
+  -webkit-backdrop-filter: blur(26px) saturate(140%);
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.16);
+  transition:
+    background-color 500ms ease,
+    border-color 500ms ease,
+    box-shadow 350ms ease,
+    min-height 350ms ease,
+    border-radius 350ms ease;
+}
+
+.is-scrolled .milad-nav {
+  min-height: 66px;
+  border-radius: 20px;
+}
+
+.milad-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: var(--milad-text);
+}
+
+.milad-mark {
+  position: relative;
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--milad-border);
+  border-radius: 13px;
+  background: linear-gradient(
+    145deg,
+    rgba(var(--milad-accent-rgb), 0.16),
+    transparent 70%
+  );
+}
+
+.milad-mark svg {
+  width: 25px;
+  height: 25px;
+  overflow: visible;
+}
+
+.milad-mark-orbit {
+  transform-origin: 16px 16px;
+  animation: milad-logo-orbit 9s linear infinite;
+}
+
+.milad-brand-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 850;
+  letter-spacing: 0.17em;
+  line-height: 1.1;
+}
+
+.milad-brand-sub {
+  display: block;
+  margin-top: 5px;
+  color: var(--milad-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.milad-nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.milad-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 13px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--milad-muted);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease;
+}
+
+.milad-link::after {
+  content: "";
+  position: absolute;
+  left: -120%;
+  bottom: 0;
+  width: 70%;
+  height: 1px;
+  background: var(--milad-accent);
+  transition: left 400ms ease;
+}
+
+.milad-link:hover,
+.milad-link.active {
+  color: var(--milad-text);
+  background: rgba(var(--milad-accent-rgb), 0.07);
+  border-color: var(--milad-border);
+}
+
+.milad-link:hover::after {
+  left: 115%;
+}
+
+.milad-link svg,
+.milad-action svg,
+.milad-subscribe svg {
+  flex-shrink: 0;
+}
+
+.milad-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-shrink: 0;
+}
+
+.milad-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--milad-border);
+  border-radius: 13px;
+  color: var(--milad-muted);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    transform 220ms ease;
+}
+
+.milad-icon-btn:hover {
+  color: var(--milad-accent);
+  border-color: rgba(var(--milad-accent-rgb), 0.4);
+  background: rgba(var(--milad-accent-rgb), 0.07);
+  transform: translateY(-2px);
+}
+
+.milad-theme-icon {
+  animation: milad-icon-in 320ms ease;
+}
+
+.milad-subscribe {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 0 16px;
+  overflow: hidden;
+  border: 1px solid var(--milad-accent);
+  border-radius: 13px;
+  color: #10120b;
+  background: var(--milad-accent);
+  font-size: 12px;
+  font-weight: 850;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    background-color 500ms ease;
+}
+
+.milad-subscribe::before {
+  content: "";
+  position: absolute;
+  top: -80%;
+  left: -65%;
+  width: 45%;
+  height: 260%;
+  transform: rotate(24deg);
+  background: rgba(255, 255, 255, 0.55);
+  transition: left 500ms ease;
+}
+
+.milad-subscribe:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(var(--milad-accent-rgb), 0.22);
+}
+
+.milad-subscribe:hover::before {
+  left: 130%;
+}
+
+.milad-subscribe span,
+.milad-subscribe svg {
+  position: relative;
+  z-index: 1;
+}
+
+.milad-dropdown-wrap {
+  position: relative;
+}
+
+.milad-dropdown {
+  position: absolute;
+  top: calc(100% + 17px);
+  left: 50%;
+  width: min(570px, calc(100vw - 40px));
+  padding: 18px;
+  border: 1px solid var(--milad-border);
+  border-radius: 20px;
+  background: var(--milad-panel);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(28px);
+  transform: translateX(-50%);
+  animation: milad-drop-in 220ms ease both;
+}
+
+.milad-dropdown-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 2px 3px 14px;
+}
+
+.milad-eyebrow {
+  color: var(--milad-muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.milad-live-dot {
+  width: 7px;
+  height: 7px;
+  display: inline-block;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--milad-accent);
+  box-shadow: 0 0 12px rgba(var(--milad-accent-rgb), 0.65);
+}
+
+.milad-tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.milad-tool {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--milad-border);
+  border-radius: 14px;
+  color: var(--milad-text);
+  background: rgba(128, 128, 128, 0.035);
+  text-decoration: none;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.milad-tool:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--milad-accent-rgb), 0.38);
+  background: rgba(var(--milad-accent-rgb), 0.06);
+}
+
+.milad-tool-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--milad-border);
+  border-radius: 11px;
+  color: var(--milad-accent);
+  background: rgba(var(--milad-accent-rgb), 0.07);
+}
+
+.milad-tool-title {
+  display: block;
+  margin: 2px 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.milad-tool-desc {
+  display: block;
+  color: var(--milad-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.milad-search {
+  position: relative;
+}
+
+.milad-search-panel {
+  position: absolute;
+  top: calc(100% + 17px);
+  right: 0;
+  width: min(420px, calc(100vw - 40px));
+  padding: 16px;
+  border: 1px solid var(--milad-border);
+  border-radius: 19px;
+  background: var(--milad-panel);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(28px);
+  animation: milad-drop-in 220ms ease both;
+}
+
+.milad-search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--milad-border);
+  border-radius: 13px;
+  background: rgba(128, 128, 128, 0.06);
+}
+
+.milad-search-input {
+  width: 100%;
+  min-width: 0;
+  height: 45px;
+  border: 0;
+  outline: 0;
+  color: var(--milad-text);
+  background: transparent;
+  font-size: 12px;
+}
+
+.milad-search-input::placeholder {
+  color: var(--milad-muted);
+}
+
+.milad-search-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 3px 9px;
+  color: var(--milad-muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.milad-result {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 9px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: var(--milad-text);
+  background: transparent;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  animation: milad-result-in 260ms ease both;
+}
+
+.milad-result:hover {
+  border-color: var(--milad-border);
+  background: rgba(var(--milad-accent-rgb), 0.07);
+}
+
+.milad-result-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--milad-border);
+  border-radius: 10px;
+  color: var(--milad-accent);
+}
+
+.milad-result-name {
+  display: block;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.milad-result-type {
+  display: block;
+  margin-top: 4px;
+  color: var(--milad-muted);
+  font-size: 10px;
+}
+
+.milad-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border: 1px solid var(--milad-border);
+  border-radius: 6px;
+  color: var(--milad-muted);
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+.milad-empty {
+  padding: 22px 8px;
+  color: var(--milad-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.milad-mobile-toggle {
+  display: none;
+}
+
+.milad-mobile-panel {
+  display: none;
+}
+
+@keyframes milad-orbit {
+  to {
+    --milad-angle: 360deg;
+  }
+}
+
+@property --milad-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes milad-logo-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes milad-drop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -7px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.milad-search-panel {
+  animation-name: milad-search-in;
+}
+
+@keyframes milad-search-in {
+  from {
+    opacity: 0;
+    transform: translateY(-7px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes milad-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes milad-icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@media (max-width: 1080px) {
+  .milad-nav {
+    gap: 13px;
+    padding: 0 17px;
+  }
+
+  .milad-nav-links {
+    gap: 1px;
+  }
+
+  .milad-link {
+    padding: 10px 9px;
+    font-size: 11px;
+  }
+
+  .milad-brand {
+    gap: 9px;
+  }
+
+  .milad-brand-sub {
+    letter-spacing: 0.13em;
+  }
+
+  .milad-actions {
+    gap: 6px;
+  }
+
+  .milad-subscribe {
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 850px) {
+  .milad-header {
+    padding: 15px 14px;
+  }
+
+  .milad-header.is-scrolled {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .milad-nav {
+    min-height: 67px;
+    padding: 0 14px;
+    gap: 10px;
+  }
+
+  .milad-nav-links,
+  .milad-actions .milad-subscribe {
+    display: none;
+  }
+
+  .milad-actions {
+    margin-left: auto;
+  }
+
+  .milad-mobile-toggle {
+    display: inline-grid;
+  }
+
+  .milad-mobile-panel {
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid var(--milad-border);
+    border-radius: 20px;
+    background: var(--milad-panel);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(26px);
+    animation: milad-mobile-in 240ms ease both;
+  }
+
+  .milad-mobile-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 12px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: var(--milad-muted);
+    background: transparent;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .milad-mobile-link:hover {
+    color: var(--milad-text);
+    border-color: var(--milad-border);
+    background: rgba(var(--milad-accent-rgb), 0.06);
+  }
+
+  .milad-mobile-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 5px 4px 10px;
+  }
+
+  .milad-mobile-tool {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 43px;
+    padding: 9px;
+    border: 1px solid var(--milad-border);
+    border-radius: 11px;
+    color: var(--milad-text);
+    background: transparent;
+    text-decoration: none;
+    font-size: 10px;
+  }
+
+  .milad-mobile-tool svg {
+    color: var(--milad-accent);
+    flex-shrink: 0;
+  }
+
+  .milad-mobile-subscribe {
+    display: flex;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .milad-dropdown {
+    display: none;
+  }
+}
+
+@keyframes milad-mobile-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 420px) {
+  .milad-header {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .milad-nav {
+    padding: 0 10px;
+    gap: 7px;
+  }
+
+  .milad-brand-name {
+    font-size: 12px;
+  }
+
+  .milad-brand-sub {
+    font-size: 8px;
+  }
+
+  .milad-mark {
+    width: 35px;
+    height: 35px;
+  }
+
+  .milad-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+
+/* Mobile search panel fix */
+@media (max-width: 850px) {
+  .milad-search-panel {
+    position: fixed;
+    top: 94px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-width: none;
+    max-height: min(65dvh, 480px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: 200;
+    border-radius: 18px;
+  }
+
+  .milad-search-caption {
+    padding-top: 10px;
+    padding-bottom: 7px;
+  }
+
+  .milad-result {
+    padding: 9px;
+  }
+
+  .milad-result-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .milad-shell::after {
+    opacity: 0.35;
+  }
+}
+
+
+
+.milad-intro {
+  min-height: calc(100svh - 110px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px 100px;
+  text-align: center;
+  animation: milad-intro-in 1s ease both;
+}
+
+.milad-intro-label {
+  margin: 0 0 20px;
+  color: var(--milad-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+}
+
+.milad-intro h1 {
+  margin: 0;
+  color: var(--milad-text);
+  font-size: clamp(38px, 7vw, 76px);
+  font-weight: 850;
+  letter-spacing: -0.065em;
+  line-height: 1.1;
+}
+
+.milad-intro h1 span {
+  color: var(--milad-accent);
+}
+
+.milad-intro-description {
+  margin: 20px 0 0;
+  color: var(--milad-muted);
+  font-size: clamp(12px, 2vw, 15px);
+  line-height: 1.8;
+}
+
+@keyframes milad-intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .milad-intro {
+    min-height: calc(100svh - 90px);
+    padding-bottom: 65px;
+  }
+
+  .milad-intro-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+  }
+}
